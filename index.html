@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style id="css">
+        #box {
+            margin: 20px auto;
+            position: relative;
+            width: 320px;
+            height: 480px;
+            perspective: 200px;
+        }
+        @keyframes rotate {
+            0% {
+                transform: translateZ(-16px) rotateY(0deg);
+            }
+            100% {
+                transform: translateZ(-16px) rotateY(360deg);
+            }
+        }
+        #box div {
+            position: absolute;
+            width: 32px;
+            height: 48px;
+            transform-style: preserve-3d;
+            transform: translateZ(-16px) rotate(0deg);
+        }
+        #box span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #box span:nth-of-type(1) {
+            background: url('img/img1.jpeg') no-repeat;
+            transform: rotateY(0deg) translateZ(16px);
+        }
+        #box span:nth-of-type(2) {
+            background: url('img/img2.jpeg') no-repeat;
+            transform: rotateY(90deg) translateZ(16px);
+        }
+        #box span:nth-of-type(3) {
+            background: url('img/img3.jpeg') no-repeat;
+            transform: rotateY(180deg) translateZ(16px);
+        }
+        #box span:nth-of-type(4) {
+            background: url('img/img4.jpeg') no-repeat;
+            transform: rotateY(270deg) translateZ(16px);
+        }
+        .btns {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btns button {
+            width: 100px;
+            margin: 0 10px;
+            line-height: 30px;
+            background: #fff;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            outline: none;
+        }
+        .btns button:hover {
+            background: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+    <div class="btns">
+        <button id="prev">上一张</button>
+        <button id="next">下一张</button>
+        <!-- <input type="button" value="上一张" id="prev" >
+        <input type="button" value="下一张" id="next" > -->
+    </div>
+    <script>
+        (function() {
+            window.onload = function() {
+                let box = document.querySelector('#box');
+                let css = document.querySelector('#css');
+                
+                let prev = document.querySelector('#prev');
+                let next = document.querySelector('#next');
+
+                let spanW = 32,
+                    spanH = 48;
+                let inner = '',
+                    cssInner = '';
+                for(var i=0; i<100; i++) {
+                    let x = i%10,
+                        y = parseInt(i/10);
+                    let xIndex = 5 - ((x - 5) > 0 ? (x - 5) : (5 - x));
+                    let yIndex = 5 - ((y - 5) > 0 ? (y - 5) : (5 - y));
+                    let zIndex = yIndex * 10 + xIndex;
+                    inner += `<div><span></span><span></span><span></span><span></span></div>`;
+                    cssInner += `#box div:nth-of-type(${i+1}) {left: ${x*spanW}px; top: ${y*spanH}px; z-index: ${zIndex}}`;
+                    cssInner += `#box div:nth-of-type(${i+1}) span {background-position: -${x*spanW}px -${y*spanH}px;}`;
+                }
+                box.innerHTML = inner;
+                css.innerHTML += cssInner;
+
+                let divs = document.querySelectorAll('#box div');
+                let now = 0;
+
+                prev.addEventListener('click', function() {
+                    now--;
+                    var deg = now * 90;
+                    for(var i=0; i<divs.length; i++) {
+                        divs[i].style.transition = '.5s' + (i*10) + 'ms';
+                        divs[i].style.transform = 'translateZ(-16px) rotateY(' + deg + 'deg)';
+                    }
+                });
+
+                next.onclick = function(){
+                    now++;
+                    var deg = now * 90;
+                    for(var i = 0; i < divs.length; i++){
+                        divs[i].style.transition = ".5s "+(divs.length-i)*10+"ms";
+                        divs[i].style.transform = "translateZ(-16px) rotateY("+deg+"deg)";
+                    }
+                };
+
+
+            };
+        })();
+    </script>
+</body>
+</html>
